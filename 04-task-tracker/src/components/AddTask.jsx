@@ -3,22 +3,31 @@ const AddTask = ({taskList, setTaskList}) => {
   const [addModal, setAddModal] = useState(false);
   const [projectName, setProjectName] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
-
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleAdd = (e) => {
     e.preventDefault();
-    setAddModal(false);
-    setTaskList([...taskList,{projectName,taskDescription}])
-    setAddModal(false);
-    setProjectName("");
-    setTaskDescription("");
+    if(!projectName){
+      setErrorMessage("Enter Project name to continue")
+    }else{
+      setAddModal(false);
+      setTaskList([...taskList,{projectName,taskDescription}])
+      setAddModal(false);
+      setProjectName("");
+      setTaskDescription("");
+    }
     // console.log(taskList)
   };
 
   const handleInput = (e) => {
     const { name, value } = e.target;
-    if (name === "projectName") setProjectName(value);
-    // console.log(projectName)
+    if (name === "projectName"){
+      setProjectName(value);
+      setErrorMessage("")
+    } 
+    if (name === "projectName" && value === "") {
+      setErrorMessage("Enter proejct name to continue")
+    }
     if (name === "taskDescription") setTaskDescription(value);
     // console.log(taskDescription)
   };
@@ -53,7 +62,7 @@ const AddTask = ({taskList, setTaskList}) => {
                     Project Name
                   </label>
                   <input
-                    className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-5 leading-tight focus-outline-none focus-bg-white"
+                    className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus-outline-none focus-bg-white"
                     type="text"
                     id="project-name"
                     placeholder="Project Name"
@@ -62,6 +71,9 @@ const AddTask = ({taskList, setTaskList}) => {
                     value={projectName}
                     onChange={handleInput}
                   />
+                  <p
+                  className="text-red-500 text-center mt-2 mb-5"
+                  >{errorMessage}</p>
                 </div>
                 <label
                   htmlFor="task-description" 
