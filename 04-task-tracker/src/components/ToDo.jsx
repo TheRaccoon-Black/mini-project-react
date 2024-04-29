@@ -1,10 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditTask from "./EditTask";
 
 const ToDo = ({ task, index, taskList, setTaskList }) => {
   const [time, setTime] = useState(0);
   const [running, setRunning] = useState(false);
 
+
+  useEffect(()=>{
+    let interval;
+    if (running){
+      interval = setInterval(()=>{
+        setTime((prevTime)=>prevTime+10)
+      },10)
+    }else if(!running){
+      clearInterval(interval);
+    }return ()=>clearInterval(interval)
+  },[running])
 
   const handleDelete = (itemId) => {
     let removeIndex = taskList.indexOf(task);
@@ -26,13 +37,13 @@ const ToDo = ({ task, index, taskList, setTaskList }) => {
           />
         </div>
         <p className="text-lg py-2">{task.taskDescription}</p>
-        <div>
-          <div>
+        <div className="w-full flex flex-row items-center justify-evenly">
+          {/* <div>
 
-          </div>
-          <div>
+          </div> */}
+          <div className="w-1/4 text-xl font-semibold py-4">
             <span>{("0" + Math.floor((time / 3600000) % 24)).slice(-2)}:</span>
-            <span>{("0" + Math.floor((time / 6000) % 60)).slice(-2)}:</span>
+            <span>{("0" + Math.floor((time / 60000) % 60)).slice(-2)}:</span>
             <span>{("0" + Math.floor((time / 1000) % 60)).slice(-2)}</span>
             <span className="text-sm">
               :{("0" + ((time / 10) % 100)).slice(-2)}
@@ -46,16 +57,27 @@ const ToDo = ({ task, index, taskList, setTaskList }) => {
         <span>{("0" + Math.floor((time / 1000) % 60)).slice(-2)}:</span>
         <span>{("0" + ((time / 10) % 100)).slice(-2)}</span> */}
           </div>
-          <div>
+          <div className="gap-4 flex flex-row justify-evenly">
             {running? (
             <>
-              <button className="bg-grey-400 px-1.5 py-3 rounder hover:opacity-70">Stop</button>
+              <button className="bg-grey-400 px-3 py-1.5 border rounded-lg hover:opacity-70"
+              onClick={()=>{
+                setRunning(false)
+              }}
+              >Stop</button>
             </>
         ):(
             <>
-            <button className="bg-grey-400 px-1.5 py-3 rounder hover:opacity-70">Start</button>
+            <button className="bg-grey-400 px-3 py-1.5 border rounded-lg hover:opacity-70"
+            onClick={()=>setRunning(true)}
+            >Start</button>
             </>
         )}
+        <button className="bg-grey-400 px-3 py-1.5 border rounded-lg hover:opacity-70"
+        onClick={()=>{
+          setTime(0)
+        }}
+        >Reset</button>
           </div>
         </div>
         <div className="w-full flex justify-center">

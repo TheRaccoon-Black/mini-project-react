@@ -19,10 +19,10 @@ function App() {
       <div>
         <h2 className="ml-6 text-xl font-semibold w-3/4 max-w-lg my-4 py-1 px-4 bg-gray-200">To Do</h2>
       {
-        taskList.slice(0).reverse().map((task,i)=>
-        <>
+        taskList.map((task,i)=>
+        
         <ToDo key={new Date().getTime()} task={task} index={i} taskList={taskList} setTaskList={setTaskList}/>
-        </>  
+         
       )
       }
       </div>
