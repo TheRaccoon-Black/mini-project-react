@@ -49,10 +49,12 @@ const ToDo = ({ task, index, taskList, setTaskList }) => {
           <div>
             {running? (
             <>
-
+              <button className="bg-grey-400 px-1.5 py-3 rounder hover:opacity-70">Stop</button>
             </>
         ):(
-            <></>
+            <>
+            <button className="bg-grey-400 px-1.5 py-3 rounder hover:opacity-70">Start</button>
+            </>
         )}
           </div>
         </div>
