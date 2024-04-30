@@ -1,10 +1,23 @@
 import { useEffect, useState } from "react";
 import EditTask from "./EditTask";
+import { useDrag } from "react-dnd";
 
 const ToDo = ({ task, index, taskList, setTaskList }) => {
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState(task.duration);
   const [running, setRunning] = useState(false);
-
+  const [{ isDragging },drag] = useDrag(()=>({
+    type: "todo",
+    item:{
+      id:index,
+      projectName: task.projectName,
+      taskDescription: task.taskDescription,
+      timestamp: task.timestamp,
+      duration: task.duration
+    },
+    collect: (monitor)=>({
+      isDragging: !!monitor.isDragging(),
+    })
+  }))
 
   useEffect(()=>{
     let interval;
@@ -17,16 +30,32 @@ const ToDo = ({ task, index, taskList, setTaskList }) => {
     }return ()=>clearInterval(interval)
   },[running])
 
+
   const handleDelete = (itemId) => {
     let removeIndex = taskList.indexOf(task);
     taskList.splice(removeIndex, 1);
-    setTaskList((currentTasks) =>
-      currentTasks.filter((todo) => todo.id !== itemId)
-    );
+    localStorage.setItem("taskList",JSON.stringify(taskList));
+    window.location.reload();
+    // setTaskList((currentTasks) =>
+    //   currentTasks.filter((todo) => todo.id !== itemId)
+    // );
   };
+
+  const handleStop = () =>{
+    setRunning(false);
+    let taskIndex = taskList.indexOf(task);
+    taskList.splice(taskIndex,1,{
+      projectName: task.projectName,
+      taskDescription: task.taskDescription,
+      timestamp: task.timestamp,
+      duration: time
+    })
+    localStorage.setItem("taskList",JSON.stringify(taskList))
+    window.location.reload(); 
+  }
   return (
     <>
-      <div className="flex flex-col items-start justify-start bg-white my-4 ml-6 py-4 px-6 w-3/4 max-w-lg">
+      <div className="flex flex-col items-start justify-start bg-white my-4 py-4 px-6 w-3/4 max-w-lg" ref={drag}>
         <div className="w-full flex flex-row justify-between">
           <p className="font-semibold text-xl">{task.projectName}</p>
           <EditTask
@@ -37,11 +66,11 @@ const ToDo = ({ task, index, taskList, setTaskList }) => {
           />
         </div>
         <p className="text-lg py-2">{task.taskDescription}</p>
-        <div className="w-full flex flex-row items-center justify-evenly">
+        <div className="w-full flex flex-col sm:flex-row items-center justify-center sm:justify-evenly">
           {/* <div>
 
           </div> */}
-          <div className="w-1/4 text-xl font-semibold py-4">
+          <div className="sm:w-1/4 text-xl font-semibold py-4">
             <span>{("0" + Math.floor((time / 3600000) % 24)).slice(-2)}:</span>
             <span>{("0" + Math.floor((time / 60000) % 60)).slice(-2)}:</span>
             <span>{("0" + Math.floor((time / 1000) % 60)).slice(-2)}</span>
@@ -61,9 +90,7 @@ const ToDo = ({ task, index, taskList, setTaskList }) => {
             {running? (
             <>
               <button className="bg-grey-400 px-3 py-1.5 border rounded-lg hover:opacity-70"
-              onClick={()=>{
-                setRunning(false)
-              }}
+              onClick={handleStop}
               >Stop</button>
             </>
         ):(
