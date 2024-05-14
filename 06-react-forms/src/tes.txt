@@ -8,12 +8,11 @@ function App() {
     gender:"",
     
   })
-  // const [prompts,setPrompts] = useState({
-  //   prompt:"",
-  //   answer:"",
-  //   timestamp:new Date().getTime()
-  // })
-  const [prompts, setPrompts] = useState([]);
+  const [prompts,setPrompts] = useState({
+    prompt:"",
+    answer:"",
+    timestamp:new Date().getTime()
+  })
 
   const handleInput = (e) =>{
     const {name, value} = e.target;
@@ -29,17 +28,13 @@ function App() {
     setPrompts(newPrompts);
   }
 
-  const handleAddPrompt = () => {
-    setPrompts([
-      ...prompts,
-      {
-        prompt: "",
-        answer: "",
-        timestamp: new Date().getTime()
-      }
-    ]);
-  };
-  
+  const handleAddPrompt=()=>{
+    setPrompts([...prompts,{
+    prompt:"",
+    answer:"",
+    timestamp:new Date().getTime()
+    }])
+  }
   console.log(userInfo);
   return (
     
